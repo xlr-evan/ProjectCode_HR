@@ -45,9 +45,9 @@ int BTN_Poll(void)
 	for(;;){
 		
 		/* task1: BTN Scan */	
-		if(task_200ms == 1)
+		if(task_20ms == 1)
 		{
-			task_200ms = 0;
+			task_20ms = 0;
 
 			/* inside btn board */
 			INBTN_Logic();
@@ -95,7 +95,12 @@ void OUTBTN_Logic(void)
 				{
 					xEVENT = EV_MLOCK_OFF;
 					LED28 = 1;
+					RS485_RDTX_EN;
+					delay_ms(5);
 					while(MLOCK_Scan(OUT));
+					USART2_SendDateHex(OUT_CPR_OFF);
+					delay_ms(5);
+					RS485_RDRX_EN;
 				}
 				break;
 		case EV_MLOCK_OFF:
@@ -367,7 +372,7 @@ void OUTBTN_Logic(void)
 								RS485_RDTX_EN;
 								delay_ms(5);
 								USART2_SendDateHex(OUT_CCP_ON);
-								while(KEY_Scan(OUT));	
+								while(KEY_Scan(OUT));								
 								USART2_SendDateHex(OUT_CCP_OFF);
 								delay_ms(5);
 								RS485_RDRX_EN;
@@ -398,16 +403,13 @@ void OUTBTN_Logic(void)
 								legLock = 0;
 								pitchLock = 0;
 								rollLock = 0;
-								while(KEY_Scan(OUT));
-								delay_ms(100);
-								xEVENT = EV_MLOCK_ON;
-								break;
-					default:
 								RS485_RDTX_EN;
 								delay_ms(5);
+								while(KEY_Scan(OUT));
 								USART2_SendDateHex(OUT_CPR_OFF);
 								delay_ms(5);
 								RS485_RDRX_EN;
+								xEVENT = EV_MLOCK_ON;
 								break;
 				}
 				if(cntTime > 2200)
@@ -424,6 +426,11 @@ void OUTBTN_Logic(void)
 					legLock = 0;
 					pitchLock = 0;
 					rollLock = 0;
+					RS485_RDTX_EN;
+					delay_ms(5);
+					USART2_SendDateHex(OUT_CPR_OFF);
+					delay_ms(5);
+					RS485_RDRX_EN;
 					xEVENT = EV_MLOCK_ON;
 				}
 				break;
@@ -451,7 +458,12 @@ void INBTN_Logic(void)
 				{
 					xEVENT = EV_MLOCK_OFF;
 					LED4 = 1;
+					RS485_RDTX_EN;
+					delay_ms(5);
 					while(MLOCK_Scan(IN));
+					USART2_SendDateHex(INLEG_DOWN_OFF);
+					delay_ms(5);
+					RS485_RDRX_EN;
 				}
 				break;	
 		case EV_MLOCK_OFF:
@@ -571,16 +583,14 @@ void INBTN_Logic(void)
 							LED6 = 1;
 							backLock = 0;
 							legLock = 0;
-							while(KEY_Scan(IN));
-							delay_ms(100);
-							xEVENT = EV_MLOCK_ON;
-							break;
-					default:
 							RS485_RDTX_EN;
 							delay_ms(5);
 							USART2_SendDateHex(INLEG_DOWN_OFF);
+							while(KEY_Scan(IN));
+							USART2_SendDateHex(INLEG_DOWN_OFF);
 							delay_ms(5);
 							RS485_RDRX_EN;
+							xEVENT = EV_MLOCK_ON;
 							break;
 				}
 				if(cntTime > 2200)
@@ -591,6 +601,11 @@ void INBTN_Logic(void)
 					LED6 = 1;
 					backLock = 0;
 					legLock = 0;
+					RS485_RDTX_EN;
+					delay_ms(5);
+					USART2_SendDateHex(INLEG_DOWN_OFF);
+					delay_ms(5);
+					RS485_RDRX_EN;
 					xEVENT = EV_MLOCK_ON;
 				}
 				break;
